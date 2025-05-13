@@ -12,6 +12,7 @@ Software necesarios:
 - Docker
 
 Instrucciones de ejecución del "frontend" en git
+
 1.- Asegurar de tener github en pc
 2.- Configurar git por primera vez:
     
@@ -58,7 +59,8 @@ Instrucciones de ejecución del "frontend" en git
     
     git push origin main
 
-Instrucciones de usos Angular en terceros:
+Instrucciones de usos Angular en terceros
+
 1.- Instalar Node.js y Angular CLI
     
     npm install -g @angular/cli

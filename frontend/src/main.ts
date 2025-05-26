@@ -1,10 +1,19 @@
-/// <reference types="@angular/localize" />
-
 import { bootstrapApplication } from '@angular/platform-browser';
-
 import { AppComponent } from './app/app.component';
+import { provideRouter } from '@angular/router';
 import { appConfig } from './app/app.config';
+import { routes } from './app/app.routes';
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
+import { LOCALE_ID } from '@angular/core';
 
-bootstrapApplication(AppComponent, appConfig)
-  .catch(err => console.error(err));
 
+registerLocaleData(localeEs);
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    provideRouter(routes),
+    ...appConfig,
+    { provide: LOCALE_ID, useValue: 'es' }
+  ]
+});

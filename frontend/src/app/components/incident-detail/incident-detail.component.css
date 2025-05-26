@@ -1,0 +1,79 @@
+/* Contenedor principal */
+.incident-detail {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 25px 30px;
+  background-color: #d0e7ff;
+  border-radius: 10px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+  font-family: Arial, sans-serif;
+}
+
+/* Título */
+.incident-detail h2 {
+  text-align: center;
+  color: #1a73e8;
+  font-weight: 700;
+  font-size: 2rem;
+  margin-bottom: 25px;
+}
+
+/* Descripción */
+.incident-detail p strong {
+  color: #0d47a1;
+}
+
+/* Labels */
+.incident-detail label {
+  display: block;
+  font-weight: 600;
+  margin: 15px 0 6px 0;
+  color: #333;
+}
+
+/* Selects */
+.incident-detail select {
+  width: 100%;
+  padding: 9px 12px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1.5px solid #ccc;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.incident-detail select:hover,
+.incident-detail select:focus {
+  border-color: #3b526f;
+  outline: none;
+}
+
+/* Botón Guardar */
+.incident-detail button {
+  margin-top: 30px;
+  width: 100%;
+  background-color: #1a73e8;
+  color: white;
+  padding: 12px 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.incident-detail button:hover {
+  background-color: #155ab6;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .incident-detail {
+    padding: 20px 15px;
+  }
+
+  .incident-detail h2 {
+    font-size: 1.7rem;
+  }
+}

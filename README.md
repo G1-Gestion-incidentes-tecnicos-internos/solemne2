@@ -5,11 +5,11 @@ Gestión de incidentes tecnícos internos - InfraTech S.A
 Contexto y problemática: Se desarrollará un portal de gestiones de incidentes tecnológicos internos. Este portal permitirá a los usuarios registrar y hacer seguimientos de incidentes, asignar técnicos y consultar estadística del portal.
 
 Software necesarios:
-- Node.js
-- Angular CLI
-- Git
+- Node.js 22.15
+- Angular CLI 19.2.12
+- Git 2.49
 - IDE
-- Docker
+- Docker 28.0.4
 
 Instrucciones de ejecución del "frontend" en git
 
@@ -55,15 +55,16 @@ Instrucciones de ejecución del "frontend" en git
     
     git commit -m "descripción de cambios realizados"
 
-11.- Subir los cambios al repositorio remoto:
+11.- Subir los cambios al repositorio remoto (recuerden estar en la rama main): 
     
-    git push origin main
+    git push origin main 
 
 Instrucciones de usos Angular en terceros
 
-1.- Instalar Node.js y Angular CLI
+1.- Instalar Node.js y Angular CLI y ngx-charts 
     
     npm install -g @angular/cli
+    npm install @swimlane/ngx-charts
 
 2.- Comprobar instalaciones
     
@@ -82,3 +83,5 @@ Sí, hay error. Abril la PowerShell como administrador y ejecuta
     
     Modo de desarrollo: ng serve 
     Acceso desde cualquier dispositivo: ng serve --host 0.0.0.0
+
+Instrucciones para ejecutar Docker

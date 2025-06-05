@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
 
 export interface Incident {
   createdAt: Date;
@@ -47,7 +46,7 @@ export class IncidentService {
       estado: "cerrado",
       prioridad: 'Alta'
     },
-        {
+    {
       createdAt: new Date("2025-05-25"),
       category: 'hardware',
       descripcion: 'La impresora no responde al enviar trabajos.',
@@ -57,13 +56,17 @@ export class IncidentService {
     }
   ];
 
-  constructor() {}
-
   getIncidents(): Incident[] {
-    return [...this.incidents]; // retorna una copia para evitar modificación directa
+    return [...this.incidents];
   }
 
-  addIncident(newIncident: Incident) {
-    this.incidents.push(newIncident);
+  addIncident(incident: Incident): void {
+    this.incidents.push(incident);
+  }
+
+  updateIncident(index: number, updatedIncident: Incident): void {
+    if (index >= 0 && index < this.incidents.length) {
+      this.incidents[index] = updatedIncident;
+    }
   }
 }

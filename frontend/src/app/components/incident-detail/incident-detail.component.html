@@ -4,58 +4,59 @@
   <!-- Selector de incidente por ID -->
   <div class="incident-selector">
     <label for="incidentSelect">Selecciona un incidente:</label>
-    <select id="incidentSelect" [(ngModel)]="incident" [ngModelOptions]="{standalone: true}">
-      <option *ngFor="let inc of incidents" [ngValue]="inc">
-        #{{ inc.id }} - {{ inc.title }}
+    <select id="incidentSelect" [(ngModel)]="selectedIncidentIndex" (ngModelChange)="onIncidentChange($event)">
+      <option value="" disabled>Selecciona un incidente</option>
+      <option *ngFor="let inc of incidents; let i = index" [value]="i">
+        {{ inc.category | titlecase }} - {{ inc.descripcion | slice:0:50 }}...
       </option>
     </select>
   </div>
 
   <div class="incident-info" *ngIf="incident">
-    <p><strong>ID:</strong> #{{ incident.id }}</p>
-    <p><strong>Título:</strong> {{ incident.title }}</p>
-    <p><strong>Descripción:</strong> {{ incident.description }}</p>
-    <p><strong>Categoría:</strong> {{ incident.category }}</p>
-    <p><strong>Prioridad:</strong> {{ incident.priority }}</p>
+    <p><strong>Categoría:</strong> {{ incident.category | titlecase }}</p>
+    <p><strong>Descripción:</strong> {{ incident.descripcion }}</p>
+    <p><strong>Estado:</strong> {{ incident.estado | titlecase }}</p>
+    <p><strong>Prioridad:</strong> {{ incident.prioridad }}</p>
+    <p><strong>Responsable:</strong> {{ incident.responsable || 'Sin asignar' }}</p>
     <p><strong>Fecha de creación:</strong> {{ incident.createdAt | date:'dd/MM/yyyy' }}</p>
   </div>
 
   <div class="incident-actions" *ngIf="incident">
     <label for="assignedTo">Asignar técnico:</label>
-    <select id="assignedTo" [(ngModel)]="incident.assignedTo">
-      <option value="" disabled>Selecciona un técnico</option>
+    <select id="assignedTo" [(ngModel)]="incident.responsable">
+      <option value="">Sin asignar</option>
       <option *ngFor="let technician of technicians" [value]="technician">{{ technician }}</option>
     </select>
 
     <label for="status">Estado del incidente:</label>
-    <select id="status" [(ngModel)]="incident.status">
-      <option value="" disabled>Selecciona un estado para el incidente</option>
-      <option value="Nuevo">Nuevo</option>
-      <option value="Progreso">En progreso</option>
-      <option value="Resuelto">Resuelto</option>
+    <select id="status" [(ngModel)]="incident.estado">
+      <option value="abierto">Abierto</option>
+      <option value="en_progreso">En progreso</option>
+      <option value="cerrado">Cerrado</option>
+      <option value="pendiente">Pendiente</option>
     </select>
 
     <label for="priority">Prioridad:</label>
-    <select id="priority" [(ngModel)]="incident.priority">
-      <option value="" disabled>Selecciona una prioridad para el incidente</option>
+    <select id="priority" [(ngModel)]="incident.prioridad">
       <option value="Baja">Baja</option>
       <option value="Media">Media</option>
       <option value="Alta">Alta</option>
     </select>
   </div>
 
-  <!-- Notas de resolución con estructura similar y textarea grande -->
-  <div class="incident-info incident-notes" >
+  <!-- Notas de resolución -->
+  <div class="incident-info incident-notes" *ngIf="incident">
     <label for="resolution"><strong>Comentario:</strong></label>
     <textarea id="resolution"
-              [(ngModel)]="incident.resolution"
+              [(ngModel)]="resolutionNotes"
               rows="6"
               style="width: 100%; resize: vertical; min-height: 120px;"
               placeholder="Escriba un comentario...."></textarea>
   </div>
 
-  <div class="action-buttons">
+  <div class="action-buttons" *ngIf="incident">
     <button (click)="saveChanges()" class="save-btn">Guardar Cambios</button>
+    <button (click)="generateReport()" class="report-btn">Generar Informe</button>
     <button (click)="goBack()" class="back-btn">Volver</button>
   </div>
 </div>

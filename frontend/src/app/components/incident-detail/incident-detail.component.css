@@ -48,23 +48,114 @@
   outline: none;
 }
 
-/* Botón Guardar */
-.incident-detail button {
+/* Contenedor de botones */
+.action-buttons {
+  display: flex;
+  gap: 10px;
   margin-top: 30px;
-  width: 100%;
-  background-color: #1a73e8;
-  color: white;
+}
+
+/* Botones */
+.incident-detail button {
+  flex: 1;
   padding: 12px 0;
   font-size: 1.1rem;
   font-weight: 700;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
 }
 
-.incident-detail button:hover {
+/* Botón Guardar */
+.save-btn {
+  background-color: #1a73e8;
+  color: white;
+}
+
+.save-btn:hover {
   background-color: #155ab6;
+}
+
+/* Botón Generar Informe */
+.report-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.report-btn:hover {
+  background-color: #218838;
+}
+
+/* Botón Volver */
+.back-btn {
+  background-color: #6c757d;
+  color: white;
+}
+
+.back-btn:hover {
+  background-color: #5a6268;
+}
+
+/* Estilos adicionales */
+.time-status {
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px 0;
+  border-left: 4px solid;
+}
+
+.status-normal {
+  background-color: #d4edda;
+  border-left-color: #28a745;
+}
+
+.status-warning {
+  background-color: #fff3cd;
+  border-left-color: #ffc107;
+}
+
+.status-overdue {
+  background-color: #f8d7da;
+  border-left-color: #dc3545;
+  animation: pulse 2s infinite;
+}
+
+.status-resolved {
+  background-color: #d1ecf1;
+  border-left-color: #17a2b8;
+}
+
+.status-unknown {
+  background-color: #e9ecef;
+  border-left-color: #6c757d;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.time-info {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+}
+
+.check-time-btn {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-top: 10px;
+}
+
+.check-time-btn:hover {
+  background-color: #5a6268;
 }
 
 /* Responsive */
@@ -75,5 +166,9 @@
 
   .incident-detail h2 {
     font-size: 1.7rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
   }
 }

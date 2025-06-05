@@ -59,6 +59,12 @@
         <span class="date-info">
           Fecha: {{ incident.createdAt | date:'dd/MM/yyyy':'':'es' }}
         </span>
+        <span class="opening-time">
+          Apertura: {{ incident.openingTime || 'No especificado' }}
+        </span>
+        <span class="closing-time" *ngIf="incident.status !== 'Abierto' && incident.status !== 'Progreso'">
+          Cierre: {{ incident.closingTime || 'No especificado' }}
+        </span>
       </div>
     </div>
   </div>

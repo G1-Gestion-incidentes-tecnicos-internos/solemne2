@@ -1,0 +1,71 @@
+<div class="incident-form-wrapper">
+  <h2>Reportar Incidente</h2>
+  <form (ngSubmit)="onSubmit()" #incidentForm="ngForm" class="incident-form">
+
+    <label for="fecha"> Fecha:</label>
+    <input
+      type="date"
+      id="fecha"
+      name="fecha"
+      [(ngModel)]="incident.createdAt"
+      required
+    />
+
+    <label for="tipo"> Tipo de incidente:</label>
+    <select
+      id="tipo"
+      name="tipo"
+      [(ngModel)]="incident.category"
+      required
+    >
+      <option value="" disabled>Selecciona un tipo</option>
+      <option value="hardware">Hardware</option>
+      <option value="software">Software</option>
+      <option value="Red">Red</option>
+      <option value="otro">Otro</option>
+    </select>
+
+    <!-- PRIORIDAD: esta sección va antes que descripción -->
+    <label for="prioridad"> Prioridad:</label>
+    <select
+      id="prioridad"
+      name="prioridad"
+      [(ngModel)]="incident.prioridad"
+      required
+    >
+      <option value="" disabled>Seleccione una prioridad</option>
+      <option value="Alta">Alta</option>
+      <option value="Media">Media</option>
+      <option value="Baja">Baja</option>
+    </select>
+    
+    <label for="titulo">Título del problema:</label>
+    <input
+      type="text"
+      id="titulo"
+      name="titulo"
+      [(ngModel)]="incident.title"
+      placeholder="Escribe brevemente el titulo"
+      required
+    />
+    
+    
+    <label for="descripcion"> Descripción:</label>
+    <textarea
+      id="descripcion"
+      name="descripcion"
+      rows="5"
+      placeholder="Describe el incidente con detalles..."
+      [(ngModel)]="incident.descripcion"
+      required
+    ></textarea>
+
+    <button
+      type="submit"
+      [disabled]="!incidentForm.form.valid"
+      class="submit-btn"
+    >
+      Enviar Incidente
+    </button>
+  </form>
+</div>

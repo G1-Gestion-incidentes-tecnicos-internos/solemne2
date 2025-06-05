@@ -46,6 +46,14 @@ export class IncidentService {
       responsable: "",
       estado: "cerrado",
       prioridad: 'Alta'
+    },
+        {
+      createdAt: new Date("2025-05-25"),
+      category: 'hardware',
+      descripcion: 'La impresora no responde al enviar trabajos.',
+      responsable: "",
+      estado: "cerrado",
+      prioridad: 'Alta'
     }
   ];
 

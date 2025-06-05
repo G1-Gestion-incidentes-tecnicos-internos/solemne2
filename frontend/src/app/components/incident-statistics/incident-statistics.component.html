@@ -1,1 +1,36 @@
-<p>incident-statistics works!</p>
+<div class="dashboard-container">
+  <div class="stats-cards">
+    <div class="stat-card">
+      <h3>Total de Incidentes</h3>
+      <p class="stat-number">{{ totalIncidents }}</p>
+    </div>
+    
+    <div class="stat-card resolved">
+      <h3>Incidentes Resueltos</h3>
+      <p class="stat-number">{{ resolvedIncidents }}</p>
+    </div>
+    
+    <div class="stat-card pending">
+      <h3>Incidentes Pendientes</h3>
+      <p class="stat-number">{{ pendingIncidents }}</p>
+    </div>
+    
+    <div class="stat-card time">
+      <h3>Tiempo Promedio de Resolución</h3>
+      <p class="stat-number">{{ averageResolutionTime }} días</p>
+    </div>
+  </div>
+
+  <!-- Gráficos -->
+  <div class="charts-container">
+    <div class="chart-section">
+      <h4>Incidentes por Categoría</h4>
+      <canvas id="categoryChart" width="400" height="400"></canvas>
+    </div>
+    
+    <div class="chart-section">
+      <h4>Incidentes por Mes</h4>
+      <canvas id="monthlyChart" width="400" height="400"></canvas>
+    </div>
+  </div>
+</div>

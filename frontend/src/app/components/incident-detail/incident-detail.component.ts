@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { Incident, IncidentService } from '../../services/incident.service';
+import { IncidentService } from '../../services/incident.service';
+import { Incident } from '../../models/incident.model';
 import jsPDF from 'jspdf';
 
 @Component({
@@ -13,16 +14,17 @@ import jsPDF from 'jspdf';
   styleUrls: ['./incident-detail.component.css']
 })
 export class IncidentDetailComponent implements OnInit {
-  
-  // Lista de técnicos
+  // Lista de técnicos ampliada
   technicians: string[] = [
     'Juan Pérez',
-    'María González', 
+    'María González',
     'Carlos Sánchez',
     'Ana Torres',
     'Luis Ramírez',
     'Eduardo Rojas'
   ];
+
+    // Lista de incidentes de ejemplo
 
   // Variables del componente
   incidents: Incident[] = [];
@@ -132,9 +134,9 @@ export class IncidentDetailComponent implements OnInit {
       // Datos del incidente
       const incidentData = [
         { label: 'Categoría:', value: this.incident.category || 'N/A' },
-        { label: 'Estado:', value: this.incident.estado || 'N/A' },
-        { label: 'Prioridad:', value: this.incident.prioridad || 'N/A' },
-        { label: 'Responsable:', value: this.incident.responsable || 'Sin asignar' },
+        { label: 'Estado:', value: this.incident.status || 'N/A' },
+        { label: 'Prioridad:', value: this.incident.priority || 'N/A' },
+        { label: 'Responsable:', value: this.incident.assignedTo || 'Sin asignar' },
         { label: 'Fecha de Creación:', value: this.formatDate(this.incident.createdAt) },
         { label: 'Fecha del Informe:', value: this.formatDate(new Date()) }
       ];
@@ -170,7 +172,7 @@ export class IncidentDetailComponent implements OnInit {
       yPosition += 10;
 
       doc.setFont('helvetica', 'normal');
-      const description = this.incident.descripcion || 'Sin descripción';
+      const description = this.incident.description || 'Sin descripción';
       const descriptionLines = doc.splitTextToSize(description, 170);
       doc.text(descriptionLines, 20, yPosition);
       yPosition += descriptionLines.length * 6 + 10;
@@ -192,7 +194,7 @@ export class IncidentDetailComponent implements OnInit {
       }
 
       // Pie de página
-      const pageCount = doc.getNumberOfPages();
+      const pageCount = (doc as any).internal.getNumberOfPages();
       for (let i = 1; i <= pageCount; i++) {
         doc.setPage(i);
         doc.setFontSize(10);

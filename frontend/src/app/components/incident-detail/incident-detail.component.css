@@ -48,16 +48,12 @@
   outline: none;
 }
 
-/* Contenedor de botones */
-.action-buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 30px;
-}
-
-/* Botones */
+/* Botón Guardar */
 .incident-detail button {
-  flex: 1;
+  margin-top: 30px;
+  width: 100%;
+  background-color: #1a73e8;
+  color: white;
   padding: 12px 0;
   font-size: 1.1rem;
   font-weight: 700;
@@ -156,7 +152,13 @@
 
 .check-time-btn:hover {
   background-color: #5a6268;
+  transition: background-color 0.3s ease;
 }
+
+.incident-detail button:hover {
+  background-color: #155ab6;
+}
+
 
 /* Responsive */
 @media (max-width: 480px) {
@@ -172,3 +174,4 @@
     flex-direction: column;
   }
 }
+

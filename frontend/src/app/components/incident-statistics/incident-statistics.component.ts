@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Chart } from 'chart.js/auto';
-import { IncidentService, Incident } from '../../services/incident.service';
+import { IncidentService } from '../../services/incident.service';
+import { Incident } from '../../models/incident.model';
 
 @Component({
   selector: 'app-incident-statistics',
@@ -35,12 +36,12 @@ export class IncidentStatisticsComponent implements OnInit {
     
     // Incidentes resueltos (estado "cerrado")
     this.resolvedIncidents = incidents.filter(incident => 
-      incident.estado.toLowerCase() === 'cerrado'
+      incident.status.toLowerCase() === 'cerrado'
     ).length;
     
     // Incidentes pendientes (estado "abierto")
     this.pendingIncidents = incidents.filter(incident => 
-      incident.estado.toLowerCase() === 'abierto'
+      incident.status.toLowerCase() === 'abierto'
     ).length;
     
     // Tiempo promedio de resolución (simulado en días)
@@ -49,7 +50,7 @@ export class IncidentStatisticsComponent implements OnInit {
 
   private calculateAverageResolutionTime(incidents: Incident[]): number {
     const resolvedIncidents = incidents.filter(incident => 
-      incident.estado.toLowerCase() === 'cerrado'
+      incident.status.toLowerCase() === 'cerrado'
     );
     
     if (resolvedIncidents.length === 0) {
@@ -59,7 +60,7 @@ export class IncidentStatisticsComponent implements OnInit {
     // Simulamos tiempo de resolución basado en prioridad
     const totalDays = resolvedIncidents.reduce((total, incident) => {
       let days = 0;
-      switch (incident.prioridad) {
+      switch (incident.priority) {
         case 'Alta':
           days = Math.random() * 2 + 1; // 1-3 días
           break;

@@ -6,11 +6,13 @@ interface Incident {
   id: number;
   title: string;
   description: string;
+  category: string;
+  priority: string;
   status: string;
   assignedTo: string;
   createdAt: Date;
-  priority: 'Alto' | 'Medio' | 'Bajo';
-  category: string;
+  openingTime?: string; // Nueva propiedad añadida
+  closingTime?: string; // Nueva propiedad añadida
 }
 
 @Component({
@@ -45,6 +47,7 @@ export class IncidentListComponent implements OnInit {
       createdAt: new Date('2025-03-22'),
       category: 'Hardware',
       priority: 'Alto',
+      openingTime: '13:06', // Nueva propiedad inicializada
     },
     {
       id: 2,
@@ -55,6 +58,7 @@ export class IncidentListComponent implements OnInit {
       createdAt: new Date('2025-04-02'),
       category: 'Red',
       priority: 'Medio',
+      openingTime: '10:00', // Nueva propiedad inicializada
     },
     {
       id: 3,
@@ -65,6 +69,8 @@ export class IncidentListComponent implements OnInit {
       createdAt: new Date('2025-02-15'),
       category: 'Hardware',
       priority: 'Bajo',
+      openingTime: '08:45', // Nueva propiedad inicializada
+      closingTime: '09:15'  // Nueva propiedad inicializada
     }
   ];
 

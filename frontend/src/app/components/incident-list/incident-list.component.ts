@@ -18,7 +18,7 @@ export class IncidentListComponent implements OnInit {
   sortOrder: string = 'priority'; // Cambiar el valor por defecto
 
   // Array de técnicos disponibles para asignar a incidentes
-  technicians = ['Eduardo Rojas', 'Isidora Campos', 'Carlos Sánchez'];
+  technicians = ['Eduardo Rojas', 'Camila Campos', 'Carlos Sánchez'];
 
   // Filter variables
   filterCategory: string = '';

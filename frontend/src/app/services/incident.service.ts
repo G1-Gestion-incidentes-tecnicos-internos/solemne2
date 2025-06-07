@@ -28,7 +28,7 @@ export class IncidentService {
       createdAt: new Date("2025-06-01T11:00:00"),
       openingTime: new Date("2025-06-02T11:30:00"),
       closingTime: null,
-      assignedTo: "Isidora Campos",
+      assignedTo: "Camila Campos",
       status: "En progreso",
       resolution: null,
     },

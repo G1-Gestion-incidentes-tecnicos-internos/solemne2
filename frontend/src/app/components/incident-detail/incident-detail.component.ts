@@ -17,7 +17,7 @@ export class IncidentDetailComponent implements OnInit {
   technicians: string[] = [
     'Carlos Sánchez',
     'Eduardo Rojas',
-    'Isidora Campos'
+    'Camila Campos'
   ];
 
   incidents: Incident[] = [];

@@ -2,16 +2,35 @@
   <h2>Reportar Incidente</h2>
   <form (ngSubmit)="onSubmit()" #incidentForm="ngForm" class="incident-form">
 
-    <label for="fecha"> Fecha:</label>
-    <input
-      type="date"
-      id="fecha"
-      name="fecha"
-      [(ngModel)]="incident.createdAt"
+    <label for="fechaOpcion">Fecha del incidente:</label>
+    <select
+      id="fechaOpcion"
+      name="fechaOpcion"
+      [(ngModel)]="fechaOpcion"
+      (ngModelChange)="onFechaOpcionChange()"
       required
-    />
+    >
+      <option value="" disabled>Selecciona el tipo de fecha</option>
+      <option value="automatica">Fecha automática (ahora)</option>
+      <option value="manual">Fecha manual</option>
+    </select>
 
-    <label for="tipo"> Tipo de incidente:</label>
+    <div *ngIf="fechaOpcion === 'manual'">
+      <label for="fechaManual">Selecciona la fecha:</label>
+      <input
+        type="date"
+        id="fechaManual"
+        name="fechaManual"
+        [(ngModel)]="fechaManual"
+        required
+      />
+    </div>
+
+    <div *ngIf="fechaOpcion === 'automatica'" class="fecha-automatica-info">
+      <p><strong>Fecha automática:</strong> {{ fechaActual }}</p>
+    </div>
+
+    <label for="tipo">Tipo de incidente:</label>
     <select
       id="tipo"
       name="tipo"
@@ -19,14 +38,13 @@
       required
     >
       <option value="" disabled>Selecciona un tipo</option>
-      <option value="hardware">Hardware</option>
-      <option value="software">Software</option>
+      <option value="Hardware">Hardware</option>
+      <option value="Software">Software</option>
       <option value="Red">Red</option>
-      <option value="otro">Otro</option>
+      <option value="Otros">Otros</option>
     </select>
 
-    <!-- PRIORIDAD: esta sección va antes que descripción -->
-    <label for="prioridad"> Prioridad:</label>
+    <label for="prioridad">Prioridad:</label>
     <select
       id="prioridad"
       name="prioridad"
@@ -49,16 +67,20 @@
       required
     />
     
-    
-    <label for="descripcion"> Descripción:</label>
+    <label for="descripcion">Descripción:</label>
     <textarea
       id="descripcion"
       name="descripcion"
       rows="5"
       placeholder="Describe el incidente con detalles..."
       [(ngModel)]="incident.descripcion"
+      class="static-textarea"
       required
     ></textarea>
+
+    <div class="validation-message" *ngIf="!incidentForm.form.valid">
+      <p>Debe rellenar todos los campos para enviar el incidente</p>
+    </div>
 
     <button
       type="submit"

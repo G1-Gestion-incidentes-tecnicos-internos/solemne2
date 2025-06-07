@@ -14,23 +14,14 @@ import jsPDF from 'jspdf';
   styleUrls: ['./incident-detail.component.css']
 })
 export class IncidentDetailComponent implements OnInit {
-  // Lista de técnicos ampliada
   technicians: string[] = [
-    'Juan Pérez',
-    'María González',
     'Carlos Sánchez',
-    'Ana Torres',
-    'Luis Ramírez',
-    'Eduardo Rojas'
+    'Eduardo Rojas',
+    'Isidora Campos'
   ];
 
-    // Lista de incidentes de ejemplo
-
-  // Variables del componente
   incidents: Incident[] = [];
   incident: Incident | null = null;
-  selectedIncidentIndex: number | null = null;
-  resolutionNotes: string = '';
 
   constructor(
     private router: Router,
@@ -45,10 +36,9 @@ export class IncidentDetailComponent implements OnInit {
   loadIncidents(): void {
     try {
       this.incidents = this.incidentService.getIncidents();
-      console.log('Incidentes cargados:', this.incidents); // Para debug
+      console.log('Incidentes cargados:', this.incidents);
       
       if (this.incidents.length > 0) {
-        this.selectedIncidentIndex = 0;
         this.incident = this.incidents[0];
       }
     } catch (error) {
@@ -57,36 +47,20 @@ export class IncidentDetailComponent implements OnInit {
     }
   }
 
-  onIncidentChange(index: string | number): void {
-    // Convertir a número si es string
-    const numIndex = typeof index === 'string' ? parseInt(index, 10) : index;
-    
-    console.log('Cambiando a incidente índice:', numIndex); // Para debug
-    
-    if (!isNaN(numIndex) && numIndex >= 0 && numIndex < this.incidents.length) {
-      this.selectedIncidentIndex = numIndex;
-      this.incident = this.incidents[numIndex];
-      this.resolutionNotes = ''; // Limpiar notas al cambiar incidente
-      console.log('Incidente seleccionado:', this.incident); // Para debug
-    } else {
-      console.error('Índice inválido:', numIndex);
-    }
-  }
-
   saveChanges(): void {
-    if (!this.incident || this.selectedIncidentIndex === null) {
+    if (!this.incident) {
       alert('No hay incidente seleccionado');
       return;
     }
 
     try {
-      console.log('Guardando cambios:', this.incident);
-      console.log('Notas de resolución:', this.resolutionNotes);
-      
-      // Actualizar el incidente en el servicio
-      this.incidentService.updateIncident(this.selectedIncidentIndex, this.incident);
-      
-      alert('Se guardaron los cambios exitosamente');
+      const success = this.incidentService.updateIncident(this.incident);
+      if (success) {
+        alert('Se guardaron los cambios exitosamente');
+        this.loadIncidents(); // Recargar para ver cambios
+      } else {
+        alert('Error al guardar los cambios');
+      }
     } catch (error) {
       console.error('Error al guardar cambios:', error);
       alert('Error al guardar los cambios');
@@ -103,113 +77,127 @@ export class IncidentDetailComponent implements OnInit {
       const doc = new jsPDF();
       
       // Configuración de colores
-      const primaryColor = [26, 115, 232]; // Azul
-      const secondaryColor = [240, 240, 240]; // Gris claro
-      const textColor = [51, 51, 51]; // Gris oscuro
+      const primaryColor = [26, 115, 232];
+      const textColor = [51, 51, 51];
 
-      // Encabezado
+      // Encabezado más compacto
       doc.setFillColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-      doc.rect(0, 0, 210, 40, 'F');
+      doc.rect(0, 0, 210, 25, 'F');
       
       doc.setTextColor(255, 255, 255);
-      doc.setFontSize(24);
+      doc.setFontSize(18);
       doc.setFont('helvetica', 'bold');
-      doc.text('INFORME DE INCIDENTE', 105, 20, { align: 'center' });
+      doc.text('INFORME DE INCIDENTE', 105, 12, { align: 'center' });
       
-      doc.setFontSize(14);
+      doc.setFontSize(10);
       doc.setFont('helvetica', 'normal');
-      doc.text('InfraTech S.A', 105, 30, { align: 'center' });
+      doc.text('InfraTech S.A', 105, 20, { align: 'center' });
 
-      // Información del incidente
-      let yPosition = 60;
+      // Información del incidente en formato compacto
+      let yPosition = 35;
       doc.setTextColor(textColor[0], textColor[1], textColor[2]);
-      doc.setFontSize(16);
+      doc.setFontSize(12);
       doc.setFont('helvetica', 'bold');
       doc.text('INFORMACIÓN DEL INCIDENTE', 20, yPosition);
 
-      yPosition += 15;
-      doc.setFontSize(12);
+      yPosition += 8;
+      doc.setFontSize(9);
       doc.setFont('helvetica', 'normal');
 
-      // Datos del incidente
-      const incidentData = [
-        { label: 'Categoría:', value: this.incident.category || 'N/A' },
+      // Datos del incidente en dos columnas
+      const leftColumnData = [
+        { label: 'ID:', value: `#${this.incident.id}` },
         { label: 'Estado:', value: this.incident.status || 'N/A' },
         { label: 'Prioridad:', value: this.incident.priority || 'N/A' },
         { label: 'Responsable:', value: this.incident.assignedTo || 'Sin asignar' },
-        { label: 'Fecha de Creación:', value: this.formatDate(this.incident.createdAt) },
-        { label: 'Fecha del Informe:', value: this.formatDate(new Date()) }
+        { label: 'Fecha Creación:', value: this.formatDateCompact(this.incident.createdAt) }
       ];
 
-      incidentData.forEach((item, index) => {
-        if (yPosition > 250) {
-          doc.addPage();
-          yPosition = 30;
-        }
+      const rightColumnData = [
+        { label: 'Categoría:', value: this.incident.category || 'N/A' },
+        { label: 'Fecha Apertura:', value: this.incident.openingTime ? this.formatDateCompact(this.incident.openingTime) : 'No especificado' },
+        { label: 'Fecha Cierre:', value: this.incident.closingTime ? this.formatDateCompact(this.incident.closingTime) : 'No cerrado' },
+        { label: 'Fecha Informe:', value: this.formatDateCompact(new Date()) },
+        { label: '', value: '' } // Espacio vacío
+      ];
 
-        // Fondo para las filas pares
-        if (index % 2 === 0) {
-          doc.setFillColor(secondaryColor[0], secondaryColor[1], secondaryColor[2]);
-          doc.rect(15, yPosition - 5, 180, 10, 'F');
-        }
-
+      // Columna izquierda
+      leftColumnData.forEach((item, index) => {
         doc.setFont('helvetica', 'bold');
         doc.text(item.label, 20, yPosition);
         doc.setFont('helvetica', 'normal');
-        doc.text(item.value, 80, yPosition);
-        yPosition += 12;
+        doc.text(item.value, 55, yPosition);
+        yPosition += 8;
       });
 
-      // Descripción
-      yPosition += 10;
-      if (yPosition > 230) {
-        doc.addPage();
-        yPosition = 30;
-      }
+      // Columna derecha
+      yPosition = 43; // Reset para columna derecha
+      rightColumnData.forEach((item, index) => {
+        if (item.label) {
+          doc.setFont('helvetica', 'bold');
+          doc.text(item.label, 110, yPosition);
+          doc.setFont('helvetica', 'normal');
+          doc.text(item.value, 145, yPosition);
+        }
+        yPosition += 8;
+      });
 
+      // Título del incidente
+      yPosition = 85;
       doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
+      doc.text('TÍTULO:', 20, yPosition);
+      yPosition += 5;
+      
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      const titleLines = doc.splitTextToSize(this.incident.title || 'Sin título', 170);
+      doc.text(titleLines, 20, yPosition);
+      yPosition += titleLines.length * 5 + 8;
+
+      // Descripción compacta
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(10);
       doc.text('DESCRIPCIÓN:', 20, yPosition);
-      yPosition += 10;
+      yPosition += 5;
 
       doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
       const description = this.incident.description || 'Sin descripción';
       const descriptionLines = doc.splitTextToSize(description, 170);
-      doc.text(descriptionLines, 20, yPosition);
-      yPosition += descriptionLines.length * 6 + 10;
+      // Limitar descripción a máximo 6 líneas
+      const limitedDescriptionLines = descriptionLines.slice(0, 6);
+      doc.text(limitedDescriptionLines, 20, yPosition);
+      yPosition += limitedDescriptionLines.length * 5 + 8;
 
-      // Comentarios/Resolución
-      if (this.resolutionNotes && this.resolutionNotes.trim()) {
-        if (yPosition > 230) {
-          doc.addPage();
-          yPosition = 30;
-        }
-
+      // Resolución/Comentarios compacta
+      if (this.incident.resolution && this.incident.resolution.trim()) {
         doc.setFont('helvetica', 'bold');
-        doc.text('COMENTARIOS/RESOLUCIÓN:', 20, yPosition);
-        yPosition += 10;
+        doc.setFontSize(10);
+        doc.text('RESOLUCIÓN/COMENTARIOS:', 20, yPosition);
+        yPosition += 5;
 
         doc.setFont('helvetica', 'normal');
-        const resolutionLines = doc.splitTextToSize(this.resolutionNotes, 170);
-        doc.text(resolutionLines, 20, yPosition);
+        doc.setFontSize(9);
+        const resolutionLines = doc.splitTextToSize(this.incident.resolution, 170);
+        // Limitar resolución a máximo 8 líneas
+        const limitedResolutionLines = resolutionLines.slice(0, 8);
+        doc.text(limitedResolutionLines, 20, yPosition);
+        yPosition += limitedResolutionLines.length * 5;
       }
 
-      // Pie de página
-      const pageCount = (doc as any).internal.getNumberOfPages();
-      for (let i = 1; i <= pageCount; i++) {
-        doc.setPage(i);
-        doc.setFontSize(10);
-        doc.setTextColor(100, 100, 100);
-        doc.text(
-          `Página ${i} de ${pageCount} - Generado el ${this.formatDateTime(new Date())}`,
-          105,
-          285,
-          { align: 'center' }
-        );
-      }
+      // Pie de página compacto
+      doc.setFontSize(8);
+      doc.setTextColor(100, 100, 100);
+      doc.text(
+        `Generado el ${this.formatDateTime(new Date())}`,
+        105,
+        280,
+        { align: 'center' }
+      );
 
       // Guardar el PDF
-      const incidentId = this.selectedIncidentIndex !== null ? this.selectedIncidentIndex + 1 : 'Sin_ID';
-      const fileName = `Informe_Incidente_${incidentId}_${this.formatDateForFile(new Date())}.pdf`;
+      const fileName = `Informe_Incidente_${this.incident.id}_${this.formatDateForFile(new Date())}.pdf`;
       doc.save(fileName);
 
       alert('Informe PDF generado exitosamente');
@@ -220,13 +208,31 @@ export class IncidentDetailComponent implements OnInit {
     }
   }
 
-  private formatDate(date: Date): string {
-    if (!date) return 'Fecha no disponible';
+  // Agregar este método para formato de fecha más compacto
+  private formatDateCompact(date: Date | null): string {
+    if (!date) return 'No especificado';
     try {
       return date.toLocaleDateString('es-ES', {
         day: '2-digit',
         month: '2-digit',
-        year: 'numeric'
+        year: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      return 'Fecha inválida';
+    }
+  }
+
+  private formatDate(date: Date | null): string {
+    if (!date) return 'No especificado';
+    try {
+      return date.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
       });
     } catch (error) {
       return 'Fecha inválida';

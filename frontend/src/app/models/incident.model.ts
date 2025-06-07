@@ -5,9 +5,9 @@ export interface Incident {
   category: string;
   priority: string;
   createdAt: Date;
-  openingTime: Date; // Nueva propiedad
-  closingTime: Date; // Nueva propiedad
-  assignedTo: string;
+  openingTime: Date | null; 
+  closingTime: Date | null; 
+  assignedTo: string | null;
   status: string;
-  resolution?: string;
+  resolution: string | null;
 }

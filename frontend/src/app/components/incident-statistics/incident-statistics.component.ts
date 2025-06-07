@@ -10,11 +10,11 @@ import { Incident } from '../../models/incident.model';
 })
 export class IncidentStatisticsComponent implements OnInit {
   
-  // Propiedades para el dashboard
+  // Propiedades para el dashboard en el orden correcto
   totalIncidents: number = 0;
   resolvedIncidents: number = 0;
-  pendingIncidents: number = 0;
-  averageResolutionTime: number = 0;
+  openIncidents: number = 0;
+  inProgressIncidents: number = 0;
 
   constructor(private incidentService: IncidentService) {}
 
@@ -25,6 +25,7 @@ export class IncidentStatisticsComponent implements OnInit {
     setTimeout(() => {
       this.renderCategoryChart();
       this.renderMonthlyChart();
+      this.renderResolutionStatusChart();
     }, 100);
   }
 
@@ -34,47 +35,20 @@ export class IncidentStatisticsComponent implements OnInit {
     // Total de incidentes
     this.totalIncidents = incidents.length;
     
-    // Incidentes resueltos (estado "cerrado")
+    // Incidentes resueltos (estado "Cerrado")
     this.resolvedIncidents = incidents.filter(incident => 
-      incident.status.toLowerCase() === 'cerrado'
+      incident.status === 'Cerrado'
     ).length;
     
-    // Incidentes pendientes (estado "abierto")
-    this.pendingIncidents = incidents.filter(incident => 
-      incident.status.toLowerCase() === 'abierto'
+    // Incidentes abiertos (estado "Abierto")
+    this.openIncidents = incidents.filter(incident => 
+      incident.status === 'Abierto'
     ).length;
     
-    // Tiempo promedio de resolución (simulado en días)
-    this.averageResolutionTime = this.calculateAverageResolutionTime(incidents);
-  }
-
-  private calculateAverageResolutionTime(incidents: Incident[]): number {
-    const resolvedIncidents = incidents.filter(incident => 
-      incident.status.toLowerCase() === 'cerrado'
-    );
-    
-    if (resolvedIncidents.length === 0) {
-      return 0;
-    }
-    
-    // Simulamos tiempo de resolución basado en prioridad
-    const totalDays = resolvedIncidents.reduce((total, incident) => {
-      let days = 0;
-      switch (incident.priority) {
-        case 'Alta':
-          days = Math.random() * 2 + 1; // 1-3 días
-          break;
-        case 'Media':
-          days = Math.random() * 4 + 3; // 3-7 días
-          break;
-        case 'Baja':
-          days = Math.random() * 7 + 5; // 5-12 días
-          break;
-      }
-      return total + days;
-    }, 0);
-    
-    return Math.round(totalDays / resolvedIncidents.length);
+    // Incidentes en progreso (estado "En progreso")
+    this.inProgressIncidents = incidents.filter(incident => 
+      incident.status === 'En progreso'
+    ).length;
   }
 
   renderCategoryChart() {
@@ -88,22 +62,42 @@ export class IncidentStatisticsComponent implements OnInit {
     const categoryStats = this.getCategoryStatistics(incidents);
     
     new Chart(categoryCanvas, {
-      type: 'pie',
+      type: 'doughnut',
       data: {
         labels: Object.keys(categoryStats),
         datasets: [
           {
             data: Object.values(categoryStats),
-            backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#FF9F40']
+            backgroundColor: [
+              '#FF6384', // Hardware - Rosa
+              '#36A2EB', // Software - Azul
+              '#FFCE56', // Red - Amarillo
+              '#4BC0C0', // Otros - Verde agua
+              '#FF9F40'  // Adicional - Naranja
+            ],
+            borderWidth: 2,
+            borderColor: '#ffffff'
           }
         ]
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           title: {
             display: true,
-            text: 'Incidentes por Categoría'
+            text: 'Distribución por Categoría',
+            font: {
+              size: 16,
+              weight: 'bold'
+            }
+          },
+          legend: {
+            position: 'bottom',
+            labels: {
+              padding: 15,
+              usePointStyle: true
+            }
           }
         }
       }
@@ -126,18 +120,29 @@ export class IncidentStatisticsComponent implements OnInit {
         labels: Object.keys(monthlyStats),
         datasets: [
           {
-            label: 'Incidentes',
+            label: 'Cantidad de Incidentes',
             data: Object.values(monthlyStats),
-            backgroundColor: '#36A2EB'
+            backgroundColor: '#36A2EB',
+            borderColor: '#2E8BC0',
+            borderWidth: 2,
+            borderRadius: 8
           }
         ]
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           title: {
             display: true,
-            text: 'Incidentes por Mes'
+            text: 'Incidentes por Mes',
+            font: {
+              size: 16,
+              weight: 'bold'
+            }
+          },
+          legend: {
+            display: false
           }
         },
         scales: {
@@ -145,6 +150,75 @@ export class IncidentStatisticsComponent implements OnInit {
             beginAtZero: true,
             ticks: {
               stepSize: 1
+            },
+            grid: {
+              color: '#e9ecef'
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+  }
+
+  renderResolutionStatusChart() {
+    const statusCanvas = document.getElementById('resolutionChart') as HTMLCanvasElement;
+    if (!statusCanvas) {
+      console.error('Canvas resolutionChart no encontrado');
+      return;
+    }
+
+    const incidents = this.incidentService.getIncidents();
+    const resolutionStats = this.getResolutionStatistics(incidents);
+    
+    new Chart(statusCanvas, {
+      type: 'bar',
+      data: {
+        labels: ['Resueltos', 'No Resueltos'],
+        datasets: [
+          {
+            label: 'Número de Incidentes',
+            data: [resolutionStats.resolved, resolutionStats.unresolved],
+            backgroundColor: ['#28a745', '#dc3545'],
+            borderColor: ['#1e7e34', '#bd2130'],
+            borderWidth: 2,
+            borderRadius: 8
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Estado de Resolución',
+            font: {
+              size: 16,
+              weight: 'bold'
+            }
+          },
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1
+            },
+            grid: {
+              color: '#e9ecef'
+            }
+          },
+          x: {
+            grid: {
+              display: false
             }
           }
         }
@@ -156,7 +230,7 @@ export class IncidentStatisticsComponent implements OnInit {
     const stats: { [key: string]: number } = {};
     
     incidents.forEach(incident => {
-      const category = this.formatCategoryName(incident.category);
+      const category = incident.category;
       stats[category] = (stats[category] || 0) + 1;
     });
     
@@ -178,16 +252,19 @@ export class IncidentStatisticsComponent implements OnInit {
     return stats;
   }
 
-  private formatCategoryName(category: string): string {
-    const categoryMap: { [key: string]: string } = {
-      'hardware': 'Hardware',
-      'software': 'Software',
-      'red': 'Redes',
-      'seguridad': 'Seguridad'
-    };
+  private getResolutionStatistics(incidents: Incident[]): { resolved: number, unresolved: number } {
+    let resolved = 0;
+    let unresolved = 0;
     
-    return categoryMap[category.toLowerCase()] || 'Otros';
+    incidents.forEach(incident => {
+      if (incident.status === 'Cerrado') {
+        resolved++;
+      } else {
+        // "Abierto" y "En progreso" se consideran como no resueltos
+        unresolved++;
+      }
+    });
+    
+    return { resolved, unresolved };
   }
 }
-
-

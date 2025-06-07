@@ -16,52 +16,57 @@
   /* Tarjetas de estadísticas */
   .stats-cards {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     margin-bottom: 40px;
   }
   
   .stat-card {
-    background:  #335ed3;
     border-radius: 15px;
     padding: 25px;
     text-align: center;
     color: white;
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   }
+
+  /* Colores sólidos para cada tarjeta */
+  .stat-card.total {
+    background: #1976d2; /* Azul sólido */
+  }
   
   .stat-card.resolved {
-    background:  #335ed3;
+    background: #28a745; /* Verde sólido */
   }
   
-  .stat-card.pending {
-    background: #335ed3;
+  .stat-card.open {
+    background: #dc3545; /* Rojo sólido */
   }
   
-  .stat-card.time {
-    background:  #335ed3;
+  .stat-card.progress {
+    background: #ff9800; /* Naranja sólido */
+    color: white;
   }
   
   .stat-card h3 {
     margin: 0 0 15px 0;
     font-size: 1.1rem;
-    font-weight: 500;
-    opacity: 0.9;
+    font-weight: 600;
+    opacity: 0.95;
   }
   
   .stat-number {
-    font-size: 2.5rem;
+    font-size: 3rem;
     font-weight: bold;
     margin: 0;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   }
   
   /* Contenedor de gráficos */
   .charts-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 30px;
-    height: 500px;
+    min-height: 500px;
   }
   
   .chart-section {
@@ -77,10 +82,10 @@
     margin: 0 0 20px 0;
     text-align: center;
     color: #2c3e50;
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     font-weight: 600;
     padding-bottom: 15px;
-    border-bottom: 2px solid #e9ecef;
+    border-bottom: 3px solid #e9ecef;
   }
   
   .chart-section canvas {
@@ -91,6 +96,12 @@
   }
   
   /* Responsive design */
+  @media (max-width: 1200px) {
+    .stats-cards {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
   @media (max-width: 768px) {
     .dashboard-container {
       padding: 15px;
@@ -101,7 +112,7 @@
     }
     
     .stats-cards {
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: 1fr;
       gap: 15px;
     }
     
@@ -110,7 +121,7 @@
     }
     
     .stat-number {
-      font-size: 2rem;
+      font-size: 2.5rem;
     }
     
     .charts-container {
@@ -123,13 +134,14 @@
       height: 400px;
     }
   }
-  
+
   @media (max-width: 480px) {
-    .stats-cards {
-      grid-template-columns: 1fr;
-    }
-    
     .chart-section {
       padding: 15px;
     }
+    
+    .stat-number {
+      font-size: 2rem;
+    }
   }
+
